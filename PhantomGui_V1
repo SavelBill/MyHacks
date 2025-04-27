@@ -1,0 +1,894 @@
+local Phantom = {}
+
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
+local playergui = player:WaitForChild("PlayerGui")
+Phantom.LocalCharacter = player.Character
+
+function Phantom:GuiBuilder()
+	local InSelector = nil
+
+	local screengui = Instance.new("ScreenGui")
+	screengui.Name = "BuilderScreen"
+	screengui.ResetOnSpawn = false
+	screengui.Parent = playergui
+
+	local tools = Instance.new("Frame")
+	tools.Name = "Tools"
+	tools.Parent = screengui
+	tools.Position = UDim2.new(0.1, 483, 0.3, -142)
+	tools.Size = UDim2.new(0, 800, 0, 80)
+	tools.BackgroundColor3 = Color3.fromRGB(53, 53, 53)
+	tools.AnchorPoint = Vector2.new(0.5, 0.5)
+
+	local uilist = Instance.new("UIListLayout", tools)
+	uilist.Padding = UDim.new(0, 20)
+	uilist.FillDirection = Enum.FillDirection.Horizontal
+	uilist.HorizontalAlignment = Enum.HorizontalAlignment.Left
+	uilist.HorizontalFlex = Enum.UIFlexAlignment.None
+	uilist.VerticalAlignment = Enum.VerticalAlignment.Center
+
+	local button = Instance.new("TextButton")
+	button.Parent = tools
+	button.Size = UDim2.new(0.091, 0, 0.7, 0)
+	button.Position = UDim2.new(0, 0, 0, 15)
+	button.Text = "Frame"
+	button.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
+	button.TextColor3 = Color3.new(1, 1, 1)
+	button.TextSize = 16
+
+	local button2 = Instance.new("TextButton")
+	button2.Parent = tools
+	button2.Size = UDim2.new(0.091, 0, 0.7, 0)
+	button2.Position = UDim2.new(0, 0, 0, 15)
+	button2.Text = "Button"
+	button2.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
+	button2.TextColor3 = Color3.new(1, 1, 1)
+	button2.TextSize = 16
+
+	local button3 = Instance.new("TextButton")
+	button3.Parent = tools
+	button3.Size = UDim2.new(0.091, 0, 0.7, 0)
+	button3.Position = UDim2.new(0, 0, 0, 15)
+	button3.Text = "Text"
+	button3.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
+	button3.TextColor3 = Color3.new(1, 1, 1)
+	button3.TextSize = 16
+
+	local show = Instance.new("Frame")
+	show.Name = "Show"
+	show.Parent = screengui
+	show.Position = UDim2.new(0.6, 375, 0.5, -1)
+	show.Size = UDim2.new(0, 180, 0, 400)
+	show.BackgroundColor3 = Color3.fromRGB(53, 53, 53)
+	show.AnchorPoint = Vector2.new(0.5, 0.5)
+
+	local showp = Instance.new("ScrollingFrame", show)
+	showp.BackgroundColor3 = Color3.new(0.137255, 0.137255, 0.137255)
+	showp.Name = "Principal"
+	showp.Size = UDim2.new(0, 152, 0, 324)
+	showp.Position = UDim2.new(0.078, 0, 0.155, 0)
+
+	local search = Instance.new("TextBox", show)
+	search.Name = "Search"
+	search.BackgroundColor3 = Color3.new(0.137255, 0.137255, 0.137255)
+	search.Size = UDim2.new(0, 155, 0, 45)
+	search.Position = UDim2.new(0.078, 0, 0.023, 0)
+	search.PlaceholderColor3 = Color3.new(0.584314, 0.584314, 0.584314)
+	search.PlaceholderText = "Search"
+	search.TextColor3 = Color3.fromRGB(255, 255, 255)
+	search.Text = "..."
+	search.TextSize = 20
+	search.ClipsDescendants = true
+
+	local function isSimilar(text, keyword)
+		text = text:lower()
+		keyword = keyword:lower()
+
+		if string.find(text, keyword, 1, true) then
+			return true
+		end
+
+		if text:sub(1, #keyword) == keyword then
+			return true
+		end
+
+		return false
+	end
+
+	search:GetPropertyChangedSignal("Text"):Connect(function()
+		if search.Text == "" then
+			for _, item in pairs(showp:GetChildren()) do
+				if item:IsA("TextLabel") then
+					item.Visible = true
+				end
+			end
+			return
+		end
+
+		local searchText = search.Text
+		for _, item in pairs(showp:GetChildren()) do
+			if item:IsA("TextLabel") then
+				local itemName = item.Text
+				if isSimilar(itemName, searchText) then
+					item.Visible = true
+				else
+					item.Visible = false
+				end
+			end
+		end
+	end)
+
+	local uilist2 = Instance.new("UIListLayout", showp)
+
+	local positionLabel = Instance.new("TextLabel", showp)
+	positionLabel.Text = " Position: 0,0"
+
+	local sizeLabel = Instance.new("TextLabel", showp)
+	sizeLabel.Text = " Size: 0,0"
+
+	local backgroundTransparencyLabel = Instance.new("TextLabel", showp)
+	backgroundTransparencyLabel.Text = " BackgroundTransparency: 0"
+
+	local backgroundColorLabel = Instance.new("TextLabel", showp)
+	backgroundColorLabel.Text = " BackgroundColor3: (0,0,0)"
+
+	local borderModeLabel = Instance.new("TextLabel", showp)
+	borderModeLabel.Text = " BorderMode: (Enum.BorderMode.Outline)"
+
+	local borderSizePixelLabel = Instance.new("TextLabel", showp)
+	borderSizePixelLabel.Text = " BorderSizePixel: 0"
+
+	local rotationLabel = Instance.new("TextLabel", showp)
+	rotationLabel.Text = " Rotation: 0"
+
+	local zIndexLabel = Instance.new("TextLabel", showp)
+	zIndexLabel.Text = " ZIndex: 0"
+
+	for _, text in pairs(showp:GetChildren()) do
+		if text:IsA("TextLabel") then
+			text.RichText = true
+			text.Font = Enum.Font.FredokaOne
+			text.TextColor3 = Color3.fromRGB(255, 255, 255)
+			text.TextSize = 14
+			text.TextXAlignment = Enum.TextXAlignment.Left
+			text.BackgroundTransparency = 1
+			text.Size = UDim2.new(0, 179, 0, 50)
+		end
+	end
+
+	local function showInputBox(propertyType, currentValue, callback)
+		-- Criar a caixa de entrada
+		local inputBox = Instance.new("TextBox")
+		inputBox.Parent = screengui
+		inputBox.Size = UDim2.new(0, 300, 0, 50)
+		inputBox.Position = UDim2.new(0.5, -150, 0.5, -25) -- Centralizado na tela
+		inputBox.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+		inputBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+		inputBox.TextSize = 20
+		inputBox.Text = tostring(currentValue)
+		inputBox.ClearTextOnFocus = true
+		inputBox.PlaceholderText = "New Value"
+		inputBox.TextXAlignment = Enum.TextXAlignment.Left
+		inputBox.TextYAlignment = Enum.TextYAlignment.Center
+		inputBox.ClipsDescendants = true
+
+		-- Criar um botão de confirmação (Enter)
+		local confirmButton = Instance.new("TextButton")
+		confirmButton.Parent = screengui
+		confirmButton.Size = UDim2.new(0, 100, 0, 40)
+		confirmButton.Position = UDim2.new(0.5, -50, 0.6, 0)
+		confirmButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+		confirmButton.Text = "Done"
+		confirmButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+		confirmButton.TextSize = 18
+
+		-- Função que será chamada quando o usuário apertar Enter ou confirmar
+		local function onConfirm()
+			local newValue = inputBox.Text
+			if propertyType == "Position" then
+				-- A posição deve ser separada em X e Y
+				local values = string.split(newValue, ",")
+				if #values == 2 then
+					local x = tonumber(values[1])
+					local y = tonumber(values[2])
+					if x and y then
+						callback(Vector2.new(x, y))
+					end
+				end
+			elseif propertyType == "Size" then
+				-- O tamanho deve ser separado em Largura e Altura
+				local values = string.split(newValue, ",")
+				if #values == 2 then
+					local width = tonumber(values[1])
+					local height = tonumber(values[2])
+					if width and height then
+						callback(Vector2.new(width, height))
+					end
+				end
+			elseif propertyType == "Color3" then
+				-- A cor deve ser no formato RGB
+				local values = string.split(newValue, ",")
+				if #values == 3 then
+					local r = tonumber(values[1])
+					local g = tonumber(values[2])
+					local b = tonumber(values[3])
+					if r and g and b then
+						callback(Color3.new(r, g, b))
+					end
+				end
+			elseif propertyType == "SingleValue" then
+				local number = tonumber(newValue)
+				callback(number)
+			elseif propertyType == "Text" then
+				callback(newValue)
+			elseif propertyType == "RGB" then
+				local values = string.split(newValue, ",")
+				if #values == 3 then
+					local r = tonumber(values[1])
+					local g = tonumber(values[2])
+					local b = tonumber(values[3])
+					if r and g and b then
+						callback(Color3.fromRGB(r, g, b))
+					end
+				end
+			end
+
+			-- Fechar a caixa de entrada
+			inputBox:Destroy()
+			confirmButton:Destroy()
+		end
+
+		-- Conectar o botão de confirmação
+		confirmButton.MouseButton1Click:Connect(onConfirm)
+
+		-- Fechar a caixa ao pressionar "Enter"
+		inputBox.FocusLost:Connect(function(enterPressed)
+			if enterPressed then
+				onConfirm()
+			end
+		end)
+	end
+
+	-- Função para atualizar a propriedade do frame
+	local function updateFrameProperty(propertyType, frame, option)
+		if propertyType == "Position" and option == nil then
+			showInputBox(propertyType, frame.Position, function(newValue)
+				frame.Position = UDim2.new(0, newValue.X, 0, newValue.Y)
+			end)
+		elseif propertyType == "Size" and option == nil then
+			showInputBox(propertyType, frame.Size, function(newValue)
+				frame.Size = UDim2.new(0, newValue.X, 0, newValue.Y)
+			end)
+		elseif propertyType == "Color3" and option == nil then
+			showInputBox(propertyType, frame.BackgroundColor3, function(newValue)
+				frame.BackgroundColor3 = newValue
+			end)
+		elseif propertyType == "SingleValue" and option == nil then
+			showInputBox(propertyType, frame.BackgroundTransparency, function(newValue)
+				frame.BackgroundTransparency = newValue
+			end)
+		elseif propertyType == "SingleValue" and option == "zind" then
+			showInputBox(propertyType, frame.ZIndex, function(newValue)
+				frame.ZIndex = newValue
+			end)
+		elseif propertyType == "SingleValue" and option == "bspl" then
+			showInputBox(propertyType, frame.BorderSizePixel, function(newValue)
+				frame.BorderSizePixel = newValue
+			end)
+		end
+	end
+
+	positionLabel.MouseWheelForward:Connect(function()
+		updateFrameProperty("Position", InSelector)
+	end)
+	sizeLabel.MouseWheelForward:Connect(function()
+		updateFrameProperty("Size", InSelector)
+	end)
+	backgroundColorLabel.MouseWheelForward:Connect(function()
+		updateFrameProperty("Color3", InSelector)
+	end)
+	backgroundTransparencyLabel.MouseWheelForward:Connect(function()
+		updateFrameProperty("SingleValue", InSelector)
+	end)
+	zIndexLabel.MouseWheelForward:Connect(function()
+		updateFrameProperty("SingleValue", InSelector, "zind")
+	end)
+	borderSizePixelLabel.MouseWheelForward:Connect(function()
+		updateFrameProperty("SingleValue", InSelector, "bspl")
+	end)
+
+	local function formatColor3(color)
+		return string.format("(%d, %d, %d)", math.floor(color.R * 255), math.floor(color.G * 255), math.floor(color.B * 255))
+	end
+
+	local function updateFrameInfo(frame)
+		if frame then
+			sizeLabel.Text = " Size: " .. tostring(frame.Size.X.Offset) .. "," .. tostring(frame.Size.Y.Offset)
+			positionLabel.Text = " Position: " .. tostring(frame.Position.X.Offset) .. "," .. tostring(frame.Position.Y.Offset)
+			backgroundTransparencyLabel.Text = " BackgroundTransparency: " .. tostring(frame.BackgroundTransparency)
+			backgroundColorLabel.Text = " BackgroundColor3: " .. formatColor3(frame.BackgroundColor3)
+			borderSizePixelLabel.Text = " BorderSizePixel: " .. tostring(frame.BorderSizePixel)
+			rotationLabel.Text = " Rotation: " .. tostring(frame.Rotation)
+			zIndexLabel.Text = " ZIndex: " .. tostring(frame.ZIndex)
+		end
+	end
+
+	task.spawn(function()
+		while true do
+			task.wait(0.1)
+			if InSelector ~= nil then
+				updateFrameInfo(InSelector)
+			end
+		end
+	end)
+
+	local function deselectFrame(selectedFrame)
+		if selectedFrame then
+			if selectedFrame:IsA("TextButton") then
+				screengui["Button Mode"]:Destroy()
+			end
+			InSelector = nil
+			for _, child in pairs(selectedFrame:GetChildren()) do
+				if child:IsA("UIDragDetector") then
+					child:Destroy()
+				end
+				if child:IsA("UIStroke") then
+					child:Destroy()
+				end
+				if child.Name == "ResizeHandle" then
+					child:Destroy()
+				end
+			end
+		end
+	end
+
+	local buttonmode2 = false
+	local function bmode(mode_type)
+		if mode_type == "on" then
+			buttonmode2 = true
+			for _, text in pairs(showp:GetChildren()) do
+				if text:IsA("TextLabel") then
+					text.Visible = false
+				end
+			end
+			local textLabel = Instance.new("TextLabel", showp)
+			textLabel.Text = " Text: " .. InSelector.Text
+
+			local textscaledLabel = Instance.new("TextLabel", showp)
+			textscaledLabel.Text = " TextScaled: " .. tostring(InSelector.TextScaled)
+
+			local fontLabel = Instance.new("TextLabel", showp)
+			fontLabel.Text = " Font: " .. InSelector.Font.Name
+
+			local textColorLabel = Instance.new("TextLabel", showp)
+			textColorLabel.Text = " TextColor3(RGB): " .. tostring(InSelector.TextColor3)
+
+			local textSizeLabel = Instance.new("TextLabel", showp)
+			textSizeLabel.Text = " TextSize: " .. tostring(InSelector.TextSize)
+
+			local textTransparencyLabel = Instance.new("TextLabel", showp)
+			textTransparencyLabel.Text = " TextTransparency: " .. tostring(InSelector.TextTransparency)
+
+			textColorLabel.MouseWheelForward:Connect(function()
+				showInputBox("RGB", tostring(InSelector.TextColor3), function(newValue)
+					InSelector.TextColor3 = newValue
+					textColorLabel.Text = " TextColor3(RGB): " .. tostring(InSelector.TextColor3)
+				end)
+			end)
+			textTransparencyLabel.MouseWheelForward:Connect(function()
+				showInputBox("SingleValue", tostring(InSelector.TextTransparency), function(newValue)
+					InSelector.TextTransparency = newValue
+					textTransparencyLabel.Text = " TextTransparency: " .. tostring(InSelector.TextTransparency)
+				end)
+			end)
+			textSizeLabel.MouseWheelForward:Connect(function()
+				showInputBox("SingleValue", tostring(InSelector.TextSize), function(newValue)
+					InSelector.TextSize = newValue
+					textSizeLabel.Text = " TextSize: " .. tostring(InSelector.TextSize)
+				end)
+			end)
+
+			textscaledLabel.MouseWheelForward:Connect(function()
+				local newTextScaled = InSelector.TextScaled
+				local newValue = not newTextScaled
+
+				InSelector.TextScaled = newValue
+				textscaledLabel.Text = " TextScaled: " .. tostring(newValue)
+			end)
+			textLabel.MouseWheelForward:Connect(function()
+				showInputBox("Text", InSelector.Text, function(newValue)
+					InSelector.Text = newValue
+					textLabel.Text = " Text: " .. newValue
+				end)
+			end)
+			for _, text in pairs(showp:GetChildren()) do
+				if text:IsA("TextLabel") then
+					text.RichText = true
+					text.Font = Enum.Font.FredokaOne
+					text.TextColor3 = Color3.fromRGB(255, 255, 255)
+					text.TextSize = 14
+					text.TextXAlignment = Enum.TextXAlignment.Left
+					text.BackgroundTransparency = 1
+					text.Size = UDim2.new(0, 179, 0, 50)
+				end
+			end
+		elseif mode_type == "off" then
+			buttonmode2 = false
+			for _, text in pairs(showp:GetChildren()) do
+				if text:IsA("TextLabel") and text.Visible == true then
+					text:Destroy()
+				elseif text:IsA("TextLabel") and not text.Visible then
+					text.Visible = true
+				end
+			end
+		end
+	end
+
+	local function selectFrame(frame)
+		InSelector = frame
+
+		local drag = Instance.new("UIDragDetector")
+		drag.Parent = frame
+
+		local stroke = frame:FindFirstChild("UIStroke") or Instance.new("UIStroke")
+		stroke.Thickness = 2
+		stroke.Color = Color3.fromRGB(0, 255, 0)
+		stroke.Parent = frame
+		stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+
+		if frame:IsA("TextButton") then
+			local buttonmode = Instance.new("TextButton", screengui)
+			buttonmode.Name = "Button Mode"
+			buttonmode.Text = "Button Mode"
+			buttonmode.Font = Enum.Font.FredokaOne
+			buttonmode.TextColor3 = Color3.fromRGB(255, 255, 255)
+			buttonmode.TextScaled = true
+			buttonmode.BackgroundColor3 = Color3.fromRGB(39, 39, 39)
+			buttonmode.Position = UDim2.new(0.879, 0, 0.85, 0)
+			buttonmode.Size = UDim2.new(0, 78, 0, 50)
+
+			buttonmode.MouseButton1Click:Connect(function()
+				if buttonmode2 == false then
+					print("1")
+					bmode("on")
+				elseif buttonmode2 == true then
+					print("2")
+					bmode("off")
+				end
+			end)
+		end
+	end
+
+	local function addResizeHandle(toFrame)
+		local handle = Instance.new("Frame")
+		handle.Name = "ResizeHandle"
+		handle.Size = UDim2.new(0, 16, 0, 16)
+		handle.Position = UDim2.new(1, -16, 1, -16)
+		handle.AnchorPoint = Vector2.new(0, 0)
+		handle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+		handle.BorderSizePixel = 0
+		handle.ZIndex = 2
+		handle.Parent = toFrame
+
+		local resizing = false
+		local offset = Vector2.new()
+
+		handle.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				resizing = true
+				offset = Vector2.new(mouse.X, mouse.Y)
+			end
+		end)
+
+		handle.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 then
+				resizing = false
+			end
+		end)
+
+		game:GetService("RunService").RenderStepped:Connect(function()
+			if resizing then
+				if toFrame:FindFirstChild("UIDragDetector") then toFrame:FindFirstChild("UIDragDetector"):Destroy() end
+				local dx = mouse.X - offset.X
+				local dy = mouse.Y - offset.Y
+				toFrame.Size = UDim2.new(0, math.max(50, toFrame.Size.X.Offset + dx), 0, math.max(50, toFrame.Size.Y.Offset + dy))
+				offset = Vector2.new(mouse.X, mouse.Y)
+			end
+		end)
+	end
+
+	-- Cria o Frame com resize e drag
+	local function createFrame()
+		local newFrame = Instance.new("Frame")
+		newFrame.Size = UDim2.new(0, 200, 0, 150)
+		newFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+		newFrame.Parent = screengui
+		newFrame.Name = "Frame"
+
+		newFrame.MouseWheelForward:Connect(function(input)
+			if InSelector ~= nil then deselectFrame(InSelector) end
+			addResizeHandle(newFrame)
+			selectFrame(newFrame)
+		end)
+		newFrame.MouseWheelBackward:Connect(function(input)
+			deselectFrame(newFrame)
+		end)
+	end
+
+	local function createButton()
+		local newButton = Instance.new("TextButton")
+		newButton.Size = UDim2.new(0, 200, 0, 150)
+		newButton.Position = UDim2.new(0.5, 0, 0.5, 0)
+		newButton.Parent = screengui
+		newButton.Name = "Button"
+
+		newButton.MouseWheelForward:Connect(function(input)
+			addResizeHandle(newButton)
+			selectFrame(newButton)
+		end)
+		newButton.MouseWheelBackward:Connect(function(input)
+			deselectFrame(newButton)
+		end)
+	end
+
+	local function createLabel()
+		local newLabel = Instance.new("TextLabel")
+		newLabel.Size = UDim2.new(0, 200, 0, 150)
+		newLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
+		newLabel.Parent = screengui
+		newLabel.Name = "Button"
+
+		newLabel.MouseWheelForward:Connect(function(input)
+			addResizeHandle(newLabel)
+			selectFrame(newLabel)
+		end)
+		newLabel.MouseWheelBackward:Connect(function(input)
+			deselectFrame(newLabel)
+		end)
+	end
+
+	button.MouseButton1Click:Connect(createFrame)
+	button2.MouseButton1Click:Connect(createButton)
+	button3.MouseButton1Click:Connect(createLabel)
+
+	game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
+		if input.KeyCode == Enum.KeyCode.Delete and InSelector then
+			InSelector:Destroy()
+			InSelector = nil
+		end
+	end)
+
+	-- UISTROKES AND UICORNERS
+	local stroke = 2
+
+	local toolsc = Instance.new("UICorner", tools)
+	task.spawn(function()
+		while true do
+			task.wait(0.1)
+			for _, button in pairs(tools:GetChildren()) do
+				if button:IsA("TextButton") then
+					local buttoncorner = Instance.new("UICorner", button)
+					local buttonstroke = Instance.new("UIStroke", button)
+					buttonstroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+					buttonstroke.Thickness = stroke
+				end
+			end
+		end
+	end)
+	local showc = Instance.new("UICorner", show)
+	local searchc = Instance.new("UICorner", search)
+	local toolss = Instance.new("UIStroke", tools)
+	toolss.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	toolss.Thickness = stroke
+	local shows = Instance.new("UIStroke", show)
+	shows.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	shows.Thickness = stroke
+	local searchs = Instance.new("UIStroke", search)
+	searchs.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	searchs.Thickness = stroke
+end
+
+------------------------------ GUI CODE CREATION PART
+
+Phantom.gui = nil
+
+function Phantom:createMain(name)
+	local screengui = Instance.new("ScreenGui")
+	screengui.Name = name or "ScreenGui"
+	screengui.Parent = playergui
+	self.screengui = screengui
+end
+
+function Phantom:frame(config)
+	local frame = Instance.new("Frame")
+	frame.Size = self:parseSize(config.Size) or UDim2.new(0, 200, 0, 100)
+	frame.Position = self:parsePos(config.Position) or UDim2.new(0.5, -100, 0.5, -50)
+	frame.BackgroundColor3 = self:parseColor(config.BackgroundColor3) or Color3.fromRGB(255, 255, 255)
+	frame.AnchorPoint = Vector2.new(0.5, 0.5)
+	frame.Visible = config.Visible or true
+	frame.BackgroundTransparency = config.BTransparency
+	frame.Active = config.Active or true
+	frame.ClipsDescendants = config.ClipsDescendants or false
+	frame.Selectable = config.Selectable or false
+	frame.BorderSizePixel = config.BorderSizePixel or 1
+	frame.BorderColor3 = self:parseColor(config.BorderColor3) or Color3.fromRGB(0, 0, 0)
+	frame.ZIndex = config.ZIndex or 1
+
+	frame.Parent = self.screengui
+
+	if config.Drag == true then
+		Instance.new("UIDragDetector", frame)
+	end
+	if config.Corner then
+		local corner = Instance.new("UICorner", frame)
+		corner.CornerRadius = UDim.new(0, config.Corner)
+	end
+	if config.Stroke then
+		local stroke = Instance.new("UIStroke", frame)
+		stroke.Thickness = config.Stroke.Thickness or 1
+		stroke.Color = self:parseColor(config.Stroke.Color) or Color3.new(0, 0, 0)
+		stroke.Parent = frame
+	end
+
+	return frame
+end
+
+-- Criar TextLabel com config personalizada
+function Phantom:textlabel(parent, config, callback)
+	local label = Instance.new("TextLabel")
+	label.Size = self:parseSize(config.Size) or UDim2.new(0, 200, 0, 50)
+	label.Position = self:parsePos(config.Position) or UDim2.new(0.5, -100, 0.5, -25)
+	label.Text = config.Text or "Texto Aqui"
+	label.TextColor3 = self:parseColor(config.TextColor3) or Color3.fromRGB(0, 0, 0)
+	label.TextSize = config.TextSize or 24
+	label.BackgroundTransparency = 1
+	label.BackgroundColor3 = self:parseColor(config.BackgroundColor3) or Color3.fromRGB(0, 123, 255)
+	label.TextScaled = config.TextScaled or false
+	label.TextTransparency = config.TTransparency or 0
+	label.Active = config.Active or true
+	label.Interactable = config.Interactable or true
+	label.RichText = config.RichText or false
+	label.Visible = config.Visible or true
+	label.TextAlignment = Enum.TextAlignment.Center
+	label.TextXAlignment = config.TextXAlignment or Enum.TextXAlignment.Center
+	label.TextYAlignment = config.TextYAlignment or Enum.TextYAlignment.Center
+	label.Font = self:getFontEnum(config.Font) or Enum.Font.SourceSans
+	label.Parent = parent
+	
+	local MouseEnter = config.MouseEnter or callback
+	if MouseEnter and typeof(MouseEnter) == "function" then
+		label.MouseEnter:Connect(MouseEnter)
+	end
+	local MouseLeave = config.MouseLeave or callback
+	if MouseLeave and typeof(MouseLeave) == "function" then
+		label.MouseLeave:Connect(MouseLeave)
+	end
+	local MouseMoved = config.MouseMoved or callback
+	if MouseMoved and typeof(MouseMoved) == "function" then
+		label.MouseMoved:Connect(MouseMoved)
+	end
+	local ChildAdded = config.ChildAdded or callback
+	if ChildAdded and typeof(ChildAdded) == "function" then
+		label.ChildAdded:Connect(ChildAdded)
+	end
+	local ChildRemoved = config.ChildRemoved or callback
+	if ChildRemoved and typeof(ChildRemoved) == "function" then
+		label.ChildRemoved:Connect(ChildRemoved)
+	end
+	local InputBegan = config.InputBegan or callback
+	if InputBegan and typeof(InputBegan) == "function" then
+		label.InputBegan:Connect(InputBegan)
+	end
+	local InputEnded = config.InputEnded or callback
+	if InputEnded and typeof(InputEnded) == "function" then
+		label.InputEnded:Connect(InputEnded)
+	end
+	local MouseWheelForward = config.MouseWheelForward or callback
+	if MouseWheelForward and typeof(MouseWheelForward) == "function" then
+		label.MouseWheelForward:Connect(MouseWheelForward)
+	end
+	local MouseWheelBackward = config.MouseWheelBackward or callback
+	if MouseWheelBackward and typeof(MouseWheelBackward) == "function" then
+		label.MouseWheelBackward:Connect(MouseWheelBackward)
+	end
+	if config.Drag == true then
+		Instance.new("UIDragDetector", label)
+	end
+	if config.Corner then
+		local corner = Instance.new("UICorner", label)
+		corner.CornerRadius = UDim.new(0, config.Corner)
+	end
+
+	if config.Stroke then
+		local stroke = Instance.new("UIStroke", label)
+		stroke.Thickness = config.Stroke.Thickness or 1
+		stroke.Color = self:parseColor(config.Stroke.Color) or Color3.new(0, 0, 0)
+		stroke.Parent = label
+	end
+
+	return label
+end
+
+-- Criar Button com config personalizada
+function Phantom:button(parent, config, callback)
+	local button = Instance.new("TextButton")
+	button.Name = config.Name or "TextButton"
+	button.Size = self:parseSize(config.Size) or UDim2.new(0, 200, 0, 50)
+	button.Position = self:parsePos(config.Position) or UDim2.new(0.5, -100, 0.5, 50)
+	button.Text = config.Text or "Clique"
+	button.BackgroundColor3 = self:parseColor(config.BackgroundColor3) or Color3.fromRGB(0, 123, 255)
+	button.TextColor3 = Color3.fromRGB(255, 255, 255)
+	button.TextSize = config.TextSize or 24
+	button.TextScaled = config.TextScaled or false
+	button.BackgroundTransparency = config.BTransparency or 0
+	button.TextTransparency = config.TTransparency or 0
+	button.Active = config.Active or true
+	button.Interactable = config.Interactable or true
+	button.RichText = config.RichText or false
+	button.AutoButtonColor = config.AutoButtonColor or true
+	button.Selectable = config.Selectable or false
+	button.TextButtonStyle = config.TextButtonStyle or Enum.ButtonStyle.RobloxButton
+	button.Visible = config.Visible or true
+	button.TextAlignment = Enum.TextAlignment.Center
+	button.TextXAlignment = config.TextXAlignment or Enum.TextXAlignment.Center
+	button.TextYAlignment = config.TextYAlignment or Enum.TextYAlignment.Center
+	button.Font = self:getFontEnum(config.Font) or Enum.Font.SourceSans
+	button.Parent = parent
+
+	local onClick = config.ClickEvent or callback
+	if onClick and typeof(onClick) == "function" then
+		button.MouseButton1Click:Connect(onClick)
+	end
+	local MouseEnter = config.MouseEnter or callback
+	if MouseEnter and typeof(MouseEnter) == "function" then
+		button.MouseEnter:Connect(MouseEnter)
+	end
+	local MouseLeave = config.MouseLeave or callback
+	if MouseLeave and typeof(MouseLeave) == "function" then
+		button.MouseLeave:Connect(MouseLeave)
+	end
+	local Activated = config.Activated or callback
+	if Activated and typeof(Activated) == "function" then
+		button.Activated:Connect(Activated)
+	end
+	local MouseButton1Down = config.MouseButton1Down or callback
+	if MouseButton1Down and typeof(MouseButton1Down) == "function" then
+		button.MouseButton1Down:Connect(MouseButton1Down)
+	end
+	local MouseButton2Down = config.MouseButton2Down or callback
+	if MouseButton2Down and typeof(MouseButton2Down) == "function" then
+		button.MouseButton2Down:Connect(MouseButton2Down)
+	end
+	local MouseButton1Up = config.MouseButton1Up or callback
+	if MouseButton1Up and typeof(MouseButton1Up) == "function" then
+		button.MouseButton1Up:Connect(MouseButton1Up)
+	end
+	local MouseButton2Up = config.MouseButton2Up or callback
+	if MouseButton2Up and typeof(MouseButton2Up) == "function" then
+		button.MouseButton2Up:Connect(MouseButton2Up)
+	end
+	local MouseMoved = config.MouseMoved or callback
+	if MouseMoved and typeof(MouseMoved) == "function" then
+		button.MouseMoved:Connect(MouseMoved)
+	end
+	local MouseWheelForward = config.MouseWheelForward or callback
+	if MouseWheelForward and typeof(MouseWheelForward) == "function" then
+		button.MouseWheelForward:Connect(MouseWheelForward)
+	end
+	local MouseWheelBackward = config.MouseWheelBackward or callback
+	if MouseWheelBackward and typeof(MouseWheelBackward) == "function" then
+		button.MouseWheelBackward:Connect(MouseWheelBackward)
+	end
+	local InputBegan = config.InputBegan or callback
+	if InputBegan and typeof(InputBegan) == "function" then
+		button.InputBegan:Connect(InputBegan)
+	end
+	local InputEnded = config.InputEnded or callback
+	if InputEnded and typeof(InputEnded) == "function" then
+		button.InputEnded:Connect(InputEnded)
+	end
+	local ChildAdded = config.ChildAdded or callback
+	if ChildAdded and typeof(ChildAdded) == "function" then
+		button.ChildAdded:Connect(ChildAdded)
+	end
+	local ChildRemoved = config.ChildRemoved or callback
+	if ChildRemoved and typeof(ChildRemoved) == "function" then
+		button.ChildRemoved:Connect(ChildRemoved)
+	end
+	if config.Drag == true then
+		Instance.new("UIDragDetector", button)
+	end
+	if config.Corner then
+		local corner = Instance.new("UICorner", button)
+		corner.CornerRadius = UDim.new(0, config.Corner)
+	end
+	if config.Stroke then
+		local stroke = Instance.new("UIStroke", button)
+		stroke.Thickness = config.Stroke.Thickness or 1
+		stroke.Color = self:parseColor(config.Stroke.Color) or Color3.new(0, 0, 0)
+		stroke.Parent = button
+	end
+
+	return button
+end
+
+-- Utilitários
+function Phantom:parseSize(tbl)
+	if typeof(tbl) == "table" then
+		return UDim2.new(0, tbl[1], 0, tbl[2])
+	end
+end
+
+function Phantom:parsePos(tbl)
+	if typeof(tbl) == "table" then
+		return UDim2.new(0.5, tbl[1], 0.5, tbl[2])
+	end
+end
+
+function Phantom:parseColor(tbl)
+	if typeof(tbl) == "table" then
+		return Color3.fromRGB(tbl[1], tbl[2], tbl[3])
+	end
+end
+
+function Phantom:getFontEnum(fontName)
+	local fontMap = {
+		["Legacy"] = Enum.Font.Legacy,
+		["Arial"] = Enum.Font.Arimo,
+		["ArialBold"] = Enum.Font.ArimoBold,
+		["SourceSans"] = Enum.Font.SourceSans,
+		["SourceSansBold"] = Enum.Font.SourceSansBold,
+		["SourceSansLight"] = Enum.Font.SourceSansLight,
+		["SourceSansItalic"] = Enum.Font.SourceSansItalic,
+		["Bodoni"] = Enum.Font.Bodoni,
+		["Garamond"] = Enum.Font.Garamond,
+		["Cartoon"] = Enum.Font.Cartoon,
+		["Code"] = Enum.Font.Code,
+		["Highway"] = Enum.Font.Highway,
+		["SciFi"] = Enum.Font.SciFi,
+		["Arcade"] = Enum.Font.Arcade,
+		["Fantasy"] = Enum.Font.Fantasy,
+		["Antique"] = Enum.Font.Antique,
+		["SourceSansSemibold"] = Enum.Font.SourceSansSemibold,
+		["Gotham"] = Enum.Font.Gotham,
+		["GothamMedium"] = Enum.Font.GothamMedium,
+		["GothamBold"] = Enum.Font.GothamBold,
+		["GothamBlack"] = Enum.Font.GothamBlack,
+		["AmaticSC"] = Enum.Font.AmaticSC,
+		["Bangers"] = Enum.Font.Bangers,
+		["Creepster"] = Enum.Font.Creepster,
+		["DenkOne"] = Enum.Font.DenkOne,
+		["Fondamento"] = Enum.Font.Fondamento,
+		["FredokaOne"] = Enum.Font.FredokaOne,
+		["GrenzeGotisch"] = Enum.Font.GrenzeGotisch,
+		["IndieFlower"] = Enum.Font.IndieFlower,
+		["JosefinSans"] = Enum.Font.JosefinSans,
+		["Jura"] = Enum.Font.Jura,
+		["Kalam"] = Enum.Font.Kalam,
+		["LuckiestGuy"] = Enum.Font.LuckiestGuy,
+		["Merriweather"] = Enum.Font.Merriweather,
+		["Michroma"] = Enum.Font.Michroma,
+		["Nunito"] = Enum.Font.Nunito,
+		["Oswald"] = Enum.Font.Oswald,
+		["PatrickHand"] = Enum.Font.PatrickHand,
+		["PermanentMarker"] = Enum.Font.PermanentMarker,
+		["Roboto"] = Enum.Font.Roboto,
+		["RobotoCondensed"] = Enum.Font.RobotoCondensed,
+		["RobotoMono"] = Enum.Font.RobotoMono,
+		["Sarpanch"] = Enum.Font.Sarpanch,
+		["SpecialElite"] = Enum.Font.SpecialElite,
+		["TitilliumWeb"] = Enum.Font.TitilliumWeb,
+		["Ubuntu"] = Enum.Font.Ubuntu,
+		["BuilderSans"] = Enum.Font.BuilderSans,
+		["BuilderSansMedium"] = Enum.Font.BuilderSansMedium,
+		["BuilderSansBold"] = Enum.Font.BuilderSansBold,
+		["BuilderSansExtraBold"] = Enum.Font.BuilderSansExtraBold,
+		["Arimo"] = Enum.Font.Arimo,
+		["ArimoBold"] = Enum.Font.ArimoBold,
+	}
+
+	return fontMap[fontName]
+end
+
+return Phantom
